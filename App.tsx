@@ -53,9 +53,12 @@ const App: React.FC = () => {
   };
 
   const renderItem = ({ item }: ListRenderItemInfo<Todo>) => (
-    <View style={styles.todoItem}>
-      <Text style={styles.todoTitle}>{item.title}</Text>
-      <Text style={styles.todoAbout}>{item.about}</Text>
+    <View style={styles.itemContainer}>
+      <View style={styles.todoItem}>
+        <Text style={styles.todoTitle}>{item.title}</Text>
+        <Text style={styles.todoAbout}>{item.about}</Text>
+      </View>
+      <Image source={require('./assets/close.png')} style={styles.closeicon}/>
     </View>
   );
 
@@ -63,32 +66,33 @@ const App: React.FC = () => {
     <SafeAreaView style={styles.view}>
       <View style={styles.rowContainer}>
         <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Title..."
-          placeholderTextColor="#AAA" // visible light grey
-          style={styles.input}
-          value={title}
-          onChangeText={setTitle}
-        />
           <TextInput
-            placeholder="About..."
-            placeholderTextColor="#F0E3CAA3"
+            placeholder="Title..."
+            placeholderTextColor="#AAA" // visible light grey
             style={styles.input}
-            value={about}
-            onChangeText={setAbout}
+            value={title}
+            onChangeText={setTitle}
           />
+            <TextInput
+              placeholder="About..."
+              placeholderTextColor="#F0E3CAA3"
+              style={styles.input}
+              value={about}
+              onChangeText={setAbout}
+            />
         </View>
 
-        <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-          <Image source={require('./assets/plus.png')} style={styles.icon} />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+            <Image source={require('./assets/plus.png')} style={styles.icon} />
+          </TouchableOpacity>
       </View>
 
       <FlatList
         data={todos}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ padding: 20 }}
+        contentContainerStyle={{ padding: 10, paddingTop : 20}}
         renderItem={renderItem}
+        style = {styles.item}
       />
     </SafeAreaView>
   );
@@ -115,10 +119,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F1E1B',// background color
     borderColor: '#FF8303',
     borderWidth: 1.5,
-    padding: 10,
-    fontSize: 16,
+    padding: 5,
+    paddingLeft : 10,
+    fontSize: 14,
     borderRadius: 8,
     width: 250,  
+    fontFamily :'Roboto'
   },
   button: {
     backgroundColor: '#FF8303',
@@ -135,20 +141,63 @@ const styles = StyleSheet.create({
   view: {
     backgroundColor: '#1F1E1B',
     height: '100%',
+    padding : 5,
+    paddingTop : 20
   },
   todoItem: {
-    backgroundColor: '#2B2A27',
-    marginVertical: 5,
-    padding: 10,
     borderRadius: 8,
+    flex: 2,
+    width : 265 ,
+    height : 46, 
+    color :'#F0E3CA',
   },
   todoTitle: {
-    fontSize: 18,
-    color: '#fff',
-    fontWeight: 'bold',
+    fontSize: 22,
+    color: '#F0E3CA',
+    fontWeight: '500',
+    // top : 16,
+    // left : 16,
+    letterSpacing : 0,
+    fontFamily :'Roboto',
   },
   todoAbout: {
     fontSize: 14,
-    color: '#ccc',
+    color: '#F0E3CA',
+    width : 265 ,
+    height : 46,
+    fontFamily :'Roboto',
+    letterSpacing : 0,
+  },
+  item : {
+    width : '100%'
+  },
+  closeicon: {
+    width: 32,
+    height: 32,
+    borderWidth :2,
+    borderTopRightRadius : 5,
+    borderTopLeftRadius :5,
+    borderBottomRightRadius : 5,
+    borderBottomLeftRadius : 5,
+    backgroundColor: '#1B1A17',
+    borderColor : '#A35709'
+
+  },
+  itemContainer: {
+    flex :  2,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    borderColor : '#FF8303',
+    borderWidth : 2,
+    backgroundColor:  '#242320',
+    marginBottom : 5,
+    borderTopRightRadius : 8,
+    borderTopLeftRadius :8,
+    borderBottomRightRadius : 8,
+    borderBottomLeftRadius : 8,
+    padding : 16,
+    gap : 16
   },
 });
+
