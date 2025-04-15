@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   Image, StyleSheet, Text, TextInput, View, TouchableOpacity,
-  SafeAreaView, FlatList, ListRenderItemInfo, Modal, Pressable
+  SafeAreaView, FlatList, ListRenderItemInfo, Modal, Pressable,
+  Button
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -16,6 +17,9 @@ const App: React.FC = () => {
   const [about, setAbout] = useState('');
   const [todos, setTodos] = useState<Todo[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const [showShare, setShowShare] =  useState(false);
+  const [showEdit , setShowEdit] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -68,6 +72,20 @@ const App: React.FC = () => {
     setSelectedId((prevId) => (prevId === id ? null : id));
   };
   
+  const handleSharePress = (id : number) => {
+    setSelectedId(id);
+    setShowShare(true)    
+  }
+  
+  const handleInfoPress = (id : number) => {
+    setSelectedId(id);
+    setShowInfo(true)    
+  } 
+
+  const handleEditPress = (id : number) => {
+    setSelectedId(id);
+    setShowEdit(true)    
+  } 
 
   const renderItem = ({ item }: ListRenderItemInfo<Todo>) => (
     <Pressable onPress={(e) => {
@@ -88,14 +106,14 @@ const App: React.FC = () => {
   
         {selectedId === item.id && (
           <View style={styles.iconContainer}>
-            <TouchableOpacity>
-              <Image source={require('./assets/share.png')} style={styles.closeicon} />
+            <TouchableOpacity onPress={() => handleSharePress(item.id)}>
+              <Image source={require('./assets/share.png')} style={styles.iconButton} />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <Image source={require('./assets/info.png')} style={styles.closeicon} />
+            <TouchableOpacity onPress={() => handleInfoPress(item.id)}>
+              <Image source={require('./assets/info.png')} style={styles.iconButton} />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <Image source={require('./assets/edit.png')} style={styles.closeicon} />
+            <TouchableOpacity onPress={() => handleEditPress(item.id)}>
+              <Image source={require('./assets/edit.png')} style={styles.iconButton} />
             </TouchableOpacity>
           </View>
         )}
@@ -135,6 +153,11 @@ const App: React.FC = () => {
         contentContainerStyle={{ padding: 10, paddingTop: 20 }}
         renderItem={renderItem}
         style={styles.item}
+        ListEmptyComponent={
+          <View style={styles.noTaskImage}>
+            <Image  source={require('./assets/noTask.png')} />
+          </View>
+        }
       />
 
       <Modal
@@ -166,6 +189,90 @@ const App: React.FC = () => {
           </View>
         </View>
       </Modal>
+
+
+      <Modal
+        visible={showShare}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowShare(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity style={styles.modalButton}>
+                <Image source={require('./assets/copy.png')}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton}>
+                <Image source={require('./assets/vk.png')}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton}>
+                <Image source={require('./assets/telegram.png')}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton}>
+                <Image source={require('./assets/whatsapp.png')}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton}>
+                <Image source={require('./assets/facebook.png')}/>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={showInfo}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowInfo(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            
+          </View>
+        </View>
+      </Modal>
+
+
+      <Modal
+        visible={showEdit}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowEdit(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View >
+              <TextInput
+                placeholder="Mini Input..."
+                placeholderTextColor="#AAA"
+                style={styles.input}
+                value={title}
+                onChangeText={setTitle}
+              />
+              <TextInput
+                placeholder="Max Input..."
+                placeholderTextColor="#AAA"
+                style={styles.input}
+                value={title}
+                onChangeText={setTitle}
+              />
+            </View>
+            <View>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+              
+            </View>
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 };
@@ -217,7 +324,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flex: 2,
     width: 265,
-    paddingVertical: 4,
+    paddingVertical: 0,
   },
   todoTitle: {
     fontSize: 22,
@@ -317,4 +424,17 @@ const styles = StyleSheet.create({
     color: '#F0E3CA',
     fontSize: 16,
   },
+  noTaskImage : {
+    flex:1,
+    justifyContent :'space-around',
+    alignItems :'center',
+    paddingTop : 30
+  },
+  iconButton : {
+    width: 36,
+    height :36,
+    borderRadius : 6,
+    borderWidth :1,
+    borderColor: '#A35709',
+  }
 });
