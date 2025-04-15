@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
   Image, StyleSheet, Text, TextInput, View, TouchableOpacity,
-  SafeAreaView, FlatList, ListRenderItemInfo,
+  SafeAreaView, FlatList, ListRenderItemInfo, Modal, Pressable
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Define a type for each ToDo item
 type Todo = {
   id: number;
   title: string;
@@ -13,13 +12,19 @@ type Todo = {
 };
 
 const App: React.FC = () => {
-  const [title, setTitle] = useState<string>('');
-  const [about, setAbout] = useState<string>('');
+  const [title, setTitle] = useState('');
+  const [about, setAbout] = useState('');
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   useEffect(() => {
     loadTodos();
   }, []);
+
+  useEffect(() => {
+    AsyncStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
 
   const loadTodos = async () => {
     try {
@@ -32,7 +37,7 @@ const App: React.FC = () => {
     }
   };
 
-  const addTodo = async () => {
+  const addTodo = () => {
     if (title.trim() === '') return;
 
     const newTodo: Todo = {
@@ -41,26 +46,63 @@ const App: React.FC = () => {
       about: about.trim(),
     };
 
-    const updatedTodos = [...todos, newTodo];
-    setTodos(updatedTodos);
-    await AsyncStorage.setItem('todos', JSON.stringify(updatedTodos));
+    setTodos([...todos, newTodo]);
     setTitle('');
     setAbout('');
+  };
+
+  const deleteTodo = (id: number) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
   };
 
   const handleSubmit = () => {
     addTodo();
   };
 
+  const handleDelete = (id: number) => {
+    setSelectedId(id);
+    setShowModal(true);
+  };
+
+  const handleItemPress = (id: number) => {
+    setSelectedId((prevId) => (prevId === id ? null : id));
+  };
+  
+
   const renderItem = ({ item }: ListRenderItemInfo<Todo>) => (
-    <View style={styles.itemContainer}>
-      <View style={styles.todoItem}>
-        <Text style={styles.todoTitle}>{item.title}</Text>
-        <Text style={styles.todoAbout}>{item.about}</Text>
+    <Pressable onPress={(e) => {
+      e.stopPropagation(); // prevent outside click from hiding
+      handleItemPress(item.id);
+    }}>
+      <View style={styles.itemContainerBox}>
+        <View style={styles.itemContainer}>
+          <View style={styles.todoItem}>
+            <Text style={styles.todoTitle}>{item.title}</Text>
+            <Text style={styles.todoAbout}>{item.about}</Text>
+          </View>
+  
+          <TouchableOpacity onPress={() => handleDelete(item.id)} style={styles.closebutton}>
+            <Image source={require('./assets/close.png')} style={styles.closeicon} />
+          </TouchableOpacity>
+        </View>
+  
+        {selectedId === item.id && (
+          <View style={styles.iconContainer}>
+            <TouchableOpacity>
+              <Image source={require('./assets/share.png')} style={styles.closeicon} />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image source={require('./assets/info.png')} style={styles.closeicon} />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image source={require('./assets/edit.png')} style={styles.closeicon} />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
-      <Image source={require('./assets/close.png')} style={styles.closeicon}/>
-    </View>
+    </Pressable>
   );
+  
 
   return (
     <SafeAreaView style={styles.view}>
@@ -68,42 +110,69 @@ const App: React.FC = () => {
         <View style={styles.inputContainer}>
           <TextInput
             placeholder="Title..."
-            placeholderTextColor="#AAA" // visible light grey
+            placeholderTextColor="#AAA"
             style={styles.input}
             value={title}
             onChangeText={setTitle}
           />
-            <TextInput
-              placeholder="About..."
-              placeholderTextColor="#F0E3CAA3"
-              style={styles.input}
-              value={about}
-              onChangeText={setAbout}
-            />
+          <TextInput
+            placeholder="About..."
+            placeholderTextColor="#F0E3CAA3"
+            style={styles.input}
+            value={about}
+            onChangeText={setAbout}
+          />
         </View>
 
-          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-            <Image source={require('./assets/plus.png')} style={styles.icon} />
-          </TouchableOpacity>
+        <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+          <Image source={require('./assets/plus.png')} style={styles.icon} />
+        </TouchableOpacity>
       </View>
 
       <FlatList
         data={todos}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ padding: 10, paddingTop : 20}}
+        contentContainerStyle={{ padding: 10, paddingTop: 20 }}
         renderItem={renderItem}
-        style = {styles.item}
+        style={styles.item}
       />
+
+      <Modal
+        visible={showModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalText}>Delete this task?</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                onPress={() => {
+                  if (selectedId !== null) deleteTodo(selectedId);
+                  setShowModal(false);
+                }}
+                style={styles.modalButton}
+              >
+                <Text style={styles.modalButtonText}>Yes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setShowModal(false)}
+                style={styles.modalButton}
+              >
+                <Text style={styles.modalButtonText}>No</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
 
 export default App;
 
-
-
 const styles = StyleSheet.create({
-
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -111,20 +180,20 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   inputContainer: {
-    flex: 1, 
-    gap :2
+    flex: 1,
   },
   input: {
-    color: 'white',            // input text color
-    backgroundColor: '#1F1E1B',// background color
+    color: 'white',
+    backgroundColor: '#1F1E1B',
     borderColor: '#FF8303',
     borderWidth: 1.5,
     padding: 5,
-    paddingLeft : 10,
+    paddingLeft: 10,
     fontSize: 14,
     borderRadius: 8,
-    width: 250,  
-    fontFamily :'Roboto'
+    width: 250,
+    fontFamily: 'Roboto',
+    marginBottom: 4,
   },
   button: {
     backgroundColor: '#FF8303',
@@ -141,63 +210,111 @@ const styles = StyleSheet.create({
   view: {
     backgroundColor: '#1F1E1B',
     height: '100%',
-    padding : 5,
-    paddingTop : 20
+    padding: 5,
+    paddingTop: 20,
   },
   todoItem: {
     borderRadius: 8,
     flex: 2,
-    width : 265 ,
-    height : 46, 
-    color :'#F0E3CA',
+    width: 265,
+    paddingVertical: 4,
   },
   todoTitle: {
     fontSize: 22,
     color: '#F0E3CA',
     fontWeight: '500',
-    // top : 16,
-    // left : 16,
-    letterSpacing : 0,
-    fontFamily :'Roboto',
+    fontFamily: 'Roboto',
   },
   todoAbout: {
     fontSize: 14,
     color: '#F0E3CA',
-    width : 265 ,
-    height : 46,
-    fontFamily :'Roboto',
-    letterSpacing : 0,
+    fontFamily: 'Roboto',
   },
-  item : {
-    width : '100%'
+  item: {
+    width: '100%',
+  },
+  closebutton: {
+    backgroundColor: '#FF8303',
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
   },
   closeicon: {
     width: 32,
     height: 32,
-    borderWidth :2,
-    borderTopRightRadius : 5,
-    borderTopLeftRadius :5,
-    borderBottomRightRadius : 5,
-    borderBottomLeftRadius : 5,
+    borderWidth: 2,
+    borderRadius: 5,
     backgroundColor: '#1B1A17',
-    borderColor : '#A35709'
-
+    borderColor: '#A35709',
+  },
+  itemContainerBox: {
+    flexDirection: 'column',
+    width: '100%'
   },
   itemContainer: {
-    flex :  2,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    borderColor : '#FF8303',
-    borderWidth : 2,
-    backgroundColor:  '#242320',
-    marginBottom : 5,
-    borderTopRightRadius : 8,
-    borderTopLeftRadius :8,
-    borderBottomRightRadius : 8,
-    borderBottomLeftRadius : 8,
-    padding : 16,
-    gap : 16
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    borderColor: '#FF8303',
+    borderWidth: 2,
+    backgroundColor: '#242320',
+    marginBottom: 5,
+    borderRadius: 8,
+    width :'100%',
+    padding: 16,
+    paddingRight: 10,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: 10,
+    gap : 5
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(7,7,7,0.87)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: '#1B1A17',
+    padding: 20,
+    borderColor: '#FF8303',
+    borderTopWidth: 2,
+    alignItems: 'center',
+    width: 281,
+    height: 143,
+    borderRadius: 4,
+  },
+  modalText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    marginBottom: 20,
+    fontFamily: 'Roboto',
+    fontWeight: '400',
+    lineHeight: 18,
+    letterSpacing: 0,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+  modalButton: {
+    width: 64,
+    height: 24,
+    backgroundColor: '#1B1A17',
+    borderColor: '#FF8303',
+    borderWidth: 1.5,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalButtonText: {
+    color: '#F0E3CA',
+    fontSize: 16,
   },
 });
-
