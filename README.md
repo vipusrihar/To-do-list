@@ -1,27 +1,30 @@
-# ✅ React Native To-Do List App
+# React Native To-Do List App
 
 A feature-rich To-Do List mobile application built with **React Native**, supporting task creation, editing, deletion, sharing, and task information views. The app uses **Zustand** for state management and supports **local persistence** via AsyncStorage.
 
 ---
 
-## 📱 Screenshots
-
-*(Add screenshots here if available)*
+## Screenshots
 
 ---
 
-## 🛠️ Tech Stack
+## Figma Design Link
 
-- **React Native (Expo)**
+https://www.figma.com/design/0voUh3g2fDdGMbKNibqygj/To-Do-List--Community-?node-id=42-188
+---
+
+## Tech Stack
+
+- **React Native (CLI)**
 - **TypeScript**
-- **Zustand** – Lightweight state management
-- **AsyncStorage** – Local storage for data persistence
-- **NativeWind** (optional if using Tailwind styling)
-- **Modular Components** – Organized reusable components
+- **Zustand** 
+- **AsyncStorage** 
+- **CSS** 
+- **Modular Components** 
 
 ---
 
-## ✨ Features
+## Features
 
 - 📝 **Add Tasks** – Title & description input
 - ✏️ **Edit Tasks** – Update title and details
@@ -34,7 +37,8 @@ A feature-rich To-Do List mobile application built with **React Native**, suppor
 - 🎨 **Custom Design** – Material-styled components and modals
 
 ---
-**##🚀 Getting Started**
+
+## Getting Started**
 
 Prerequisites
 Node.js
@@ -49,12 +53,12 @@ npx react-native run-android
 
 ---
 
-## 📂 Project Structure Getting Started
+## Project Structure Getting Started
 
 ```bash
 .
-├── assets/                # Images like noTask.png
-├── components/            # Reusable UI components
+├── assets/              
+├── features/           
 │   ├── EditModal.tsx
 │   ├── InputContainer.tsx
 │   ├── ShareModal.tsx
@@ -62,22 +66,26 @@ npx react-native run-android
 │   ├── DeleteModal.tsx
 │   └── renderItem.tsx
 ├── store/
-│   └── useToDoStore.ts    # Zustand store
+│   └── useToDoStore.ts    
 ├── type/
-│   └── types.ts           # TypeScript interfaces
+│   └── types.ts          
 ├── utils/
-│   └── shareTask.ts       # Sharing logic
-├── App.tsx                # Root component
+│   ├── Todos.tsx
+│   └── shareTask.ts       
+├── App.tsx                
 └── ...
 
+
+```
+
 ---
-🔒 AsyncStorage Structure
+## AsyncStorage Structure
 todos: Array of task objects (id, title, about, created)
 
 taskId: Incremental ID for new tasks
 
 
 
-🙌 Author
+## Author
 Vipusa Sriharan
 
