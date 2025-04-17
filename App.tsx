@@ -1,67 +1,70 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image, StyleSheet, Text, TextInput, View, TouchableOpacity,
-  SafeAreaView, FlatList, Modal, Alert, Keyboard, Linking
+  SafeAreaView, FlatList, Modal, Alert, Keyboard
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Todo } from './type/types';
-import InputContainer from './components/InputContainer.tsx';
-import ShareModal from './components/ShareModal.tsx';
-import EditModal from './components/EditModal.tsx';
-import InfoModal from './components/InfoModal.tsx';
-import RenderItem from './components/renderItem.tsx';
-import DeleteModal from './components/DeleteModal.tsx';
-import { shareTask } from './utils/shareTask.tsx';
+import { useTodoStore } from './store/useToDoStore';
 
+import InputContainer from './features/InputContainer';
+import ShareModal from './features/ShareModal';
+import EditModal from './features/EditModal';
+import InfoModal from './features/InfoModal';
+import RenderItem from './features/renderItem';
+import DeleteModal from './features/DeleteModal';
+import { shareTask } from './utils/shareTask';
 
 const App: React.FC = () => {
+  const todos = useTodoStore((state) => state.todos);
+  const taskId = useTodoStore((state) => state.taskId);
+  const setTaskId = useTodoStore((state) => state.setTaskId);
+  const setTodos = useTodoStore((state) => state.setTodos);
+  const addTodoToStore = useTodoStore((state) => state.addTodo);
+  const deleteTodoFromStore = useTodoStore((state) => state.deleteTodo);
+
   const [title, setTitle] = useState('');
   const [about, setAbout] = useState('');
-  const [taskId, setTaskId] = useState(0);
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [showDelete, setShowDelete] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadTodos();
-    loadTaskId();
+    const init = async () => {
+      await loadTodos();
+      await loadTaskId();
+      setLoading(false);
+    };
+    init();
   }, []);
 
-  useEffect(() => {
-    AsyncStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
-
   const loadTodos = async () => {
-    try {
-      const data = await AsyncStorage.getItem('todos');
-      const parsed: Todo[] = data ? JSON.parse(data) : [];
-      setTodos(Array.isArray(parsed) ? parsed : []);
-    } catch (error) {
-      console.error('Failed to load todos:', error);
-      setTodos([]);
-    }
+    const saved = await AsyncStorage.getItem('todos');
+    if (saved) setTodos(JSON.parse(saved));
   };
 
   const loadTaskId = async () => {
     const id = await AsyncStorage.getItem('taskId');
-    setTaskId(id ? parseInt(id) : 0);
+    if (id) setTaskId(parseInt(id));
   };
 
   const addTodo = () => {
-    if (title.trim() === '') {
+    if (!title.trim()) {
       Alert.alert("Missing Title", "Please enter a task title before adding.");
       return;
     }
+
     const newTodo: Todo = {
       id: taskId,
       created: Date.now(),
       title: title.trim(),
       about: about.trim(),
     };
-    setTodos([...todos, newTodo]);
+
+    addTodoToStore(newTodo);
     setTitle('');
     setAbout('');
   };
@@ -69,53 +72,23 @@ const App: React.FC = () => {
   const handleSubmit = () => {
     const newId = taskId + 1;
     setTaskId(newId);
-    AsyncStorage.setItem('taskId', newId.toString());
     addTodo();
     Keyboard.dismiss();
   };
 
   const deleteTodo = (id: number) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    deleteTodoFromStore(id);
     setSelectedId(null);
-  };
-
-  const handleDelete = (id: number) => {
-    setSelectedId(id);
-    setShowDelete(true);
-  };
-
-  const handleItemPress = (id: number) => {
-    setSelectedId((prevId) => (prevId === id ? null : id));
-  };
-
-  const handleSharePress = (id: number) => {
-    setSelectedId(id);
-    setShowShare(true);
-  };
-
-  const handleInfoPress = (id: number) => {
-    setSelectedId(id);
-    setShowInfo(true);
-  };
-
-  const handleEditPress = (id: number) => {
-    const selectedTodo = todos.find(todo => todo.id === id);
-    if (selectedTodo) {
-      setTitle(selectedTodo.title);
-      setAbout(selectedTodo.about);
-      setSelectedId(id);
-      setShowEdit(true);
-    }
   };
 
   const handleEditConfirm = () => {
     if (selectedId !== null) {
       const original = todos.find(todo => todo.id === selectedId);
       if (original && (original.title !== title || original.about !== about)) {
-        const updatedTodos = todos.map(todo =>
+        const updated = todos.map(todo =>
           todo.id === selectedId ? { ...todo, title, about } : todo
         );
-        setTodos(updatedTodos);
+        setTodos(updated);
       }
       setShowEdit(false);
       setTitle('');
@@ -124,23 +97,50 @@ const App: React.FC = () => {
     }
   };
 
-
-
   const renderItem = ({ item }: { item: Todo }) => (
     <RenderItem
       item={item}
-      handleDelete={handleDelete}
-      handleItemPress={handleItemPress}
-      handleSharePress={handleSharePress}
-      handleInfoPress={handleInfoPress}
-      handleEditPress={handleEditPress}
+      handleDelete={() => {
+        setSelectedId(item.id);
+        setShowDelete(true);
+      }}
+      handleItemPress={() => { setSelectedId((prevId) => (prevId === item.id ? null : item.id)); }}
+      handleSharePress={() => {
+        setSelectedId(item.id);
+        setShowShare(true);
+      }}
+      handleInfoPress={() => {
+        setSelectedId(item.id);
+        setShowInfo(true);
+      }}
+      handleEditPress={() => {
+        setTitle(item.title);
+        setAbout(item.about);
+        setSelectedId(item.id);
+        setShowEdit(true);
+      }}
       selectedID={selectedId}
+    />
+  );
+
+  const TodoList = () => (
+    <FlatList
+      data={todos}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={renderItem}
+      contentContainerStyle={{ padding: 10, paddingTop: 20 }}
+      style={styles.item}
+      ListEmptyComponent={
+        <View style={styles.noTaskImage}>
+          <Image source={require('./assets/noTask.png')} />
+        </View>
+      }
+      keyboardShouldPersistTaps="handled"
     />
   );
 
   return (
     <SafeAreaView style={styles.view}>
-
       <InputContainer
         title={title}
         about={about}
@@ -149,19 +149,13 @@ const App: React.FC = () => {
         onSubmit={handleSubmit}
       />
 
-      <FlatList
-        data={todos}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ padding: 10, paddingTop: 20, flexGrow: 1 }}
-        renderItem={renderItem}
-        style={styles.item}
-        keyboardShouldPersistTaps="handled"
-        ListEmptyComponent={
-          <View style={styles.noTaskImage}>
-            <Image source={require('./assets/noTask.png')} />
-          </View>
-        }
-      />
+      {loading ? (
+        <View style={styles.noTaskImage}>
+          <Text style={{ color: 'white' }}>Loading tasks...</Text>
+        </View>
+      ) : (
+        <TodoList />
+      )}
 
       <DeleteModal
         showDelete={showDelete}
@@ -173,7 +167,7 @@ const App: React.FC = () => {
       <ShareModal
         showShare={showShare}
         onShowShareChange={setShowShare}
-        shareTask={(platform) => shareTask(platform, selectedId, todos, setShowShare)}
+        shareTask={(platform) => { shareTask(platform, selectedId, todos, setShowShare); setSelectedId(null) }}
         selectedID={selectedId}
       />
 
@@ -214,7 +208,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 30
+    paddingTop: 30,
   },
-
 });

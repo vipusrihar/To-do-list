@@ -41,7 +41,7 @@ const InfoModal: React.FC<InfoModalProps> = (
                         </>
                     )}
 
-                    <TouchableOpacity onPress={() => onShowInfoChange(false)} style={styles.infoButton}>
+                    <TouchableOpacity onPress={() => { onShowInfoChange(false); selectedID = null }} style={styles.infoButton}>
                         <Text style={styles.infoButtonText}>Close</Text>
                     </TouchableOpacity>
                 </View>
