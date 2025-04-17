@@ -1,60 +1,83 @@
-📱 React Native Project
-This is a new React Native project, bootstrapped using @react-native-community/cli.
+# ✅ React Native To-Do List App
 
-🛠️ Getting Started
-Note: Before starting, ensure you've followed the React Native Environment Setup Guide.
+A feature-rich To-Do List mobile application built with **React Native**, supporting task creation, editing, deletion, sharing, and task information views. The app uses **Zustand** for state management and supports **local persistence** via AsyncStorage.
 
-🚀 Step 1: Start Metro
-Metro is the JavaScript bundler for React Native. From your project root, start Metro with:
+---
 
-bash
-Copy
-Edit
-# Using npm
-npm start
+## 📱 Screenshots
 
-# OR using Yarn
-yarn start
-📲 Step 2: Build and Run the App
-In a new terminal window (with Metro running), build and run your app:
+*(Add screenshots here if available)*
 
-▶️ Android
-bash
-Copy
-Edit
-# Using npm
-npm run android
+---
 
-# OR using Yarn
-yarn android
-🍏 iOS
-For iOS development, ensure you have Xcode and CocoaPods installed.
+## 🛠️ Tech Stack
 
-Install CocoaPods (first time or when native dependencies change):
+- **React Native (Expo)**
+- **TypeScript**
+- **Zustand** – Lightweight state management
+- **AsyncStorage** – Local storage for data persistence
+- **NativeWind** (optional if using Tailwind styling)
+- **Modular Components** – Organized reusable components
 
-bash
-Copy
-Edit
-bundle install
-bundle exec pod install
-Run the app:
+---
 
-bash
-Copy
-Edit
-# Using npm
-npm run ios
+## ✨ Features
 
-# OR using Yarn
-yarn ios
-If everything is set up correctly, your app will run in the emulator/simulator or on a connected device.
+- 📝 **Add Tasks** – Title & description input
+- ✏️ **Edit Tasks** – Update title and details
+- ❌ **Delete Tasks** – With confirmation modal
+- ℹ️ **Task Info Modal** – View task details
+- 📤 **Share Tasks** – Share via WhatsApp, Telegram, Facebook, VK, Clipboard
+- 📦 **Persistent Storage** – Saves tasks using AsyncStorage
+- ✅ **FlatList UI** – Smooth rendering of task list
+- 🧠 **Zustand State** – Central state management with clean updates
+- 🎨 **Custom Design** – Material-styled components and modals
 
-You can also build the app using Android Studio or Xcode directly.
+---
+**##🚀 Getting Started**
 
-✏️ Step 3: Modify Your App
-Open the App.tsx file in your code editor and start making changes. Thanks to Fast Refresh, updates appear instantly.
+Prerequisites
+Node.js
+Android/iOS emulator or device
 
-🔁 Full Reload Options
-Android: Press <kbd>R</kbd> twice or open Dev Menu with <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd</kbd> + <kbd>M</kbd> (macOS).
+Installation
+git clone https://github.com/vipusrihar/To-do-list.git
+cd To-do-list
+npm install
+Run on Device or Emulator
+npx react-native run-android
 
-iOS: Press <kbd>R</kbd> in the iOS Simulator.
+---
+
+## 📂 Project Structure Getting Started
+
+```bash
+.
+├── assets/                # Images like noTask.png
+├── components/            # Reusable UI components
+│   ├── EditModal.tsx
+│   ├── InputContainer.tsx
+│   ├── ShareModal.tsx
+│   ├── InfoModal.tsx
+│   ├── DeleteModal.tsx
+│   └── renderItem.tsx
+├── store/
+│   └── useToDoStore.ts    # Zustand store
+├── type/
+│   └── types.ts           # TypeScript interfaces
+├── utils/
+│   └── shareTask.ts       # Sharing logic
+├── App.tsx                # Root component
+└── ...
+
+---
+🔒 AsyncStorage Structure
+todos: Array of task objects (id, title, about, created)
+
+taskId: Incremental ID for new tasks
+
+
+
+🙌 Author
+Vipusa Sriharan
+
