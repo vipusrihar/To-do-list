@@ -22,6 +22,7 @@ const App: React.FC = () => {
   const setTodos = useTodoStore((state) => state.setTodos);
   const addTodoToStore = useTodoStore((state) => state.addTodo);
   const deleteTodoFromStore = useTodoStore((state) => state.deleteTodo);
+  const toggleComplete = useTodoStore((state) => state.toggleComplete)
 
   const [title, setTitle] = useState('');
   const [about, setAbout] = useState('');
@@ -62,6 +63,7 @@ const App: React.FC = () => {
       created: Date.now(),
       title: title.trim(),
       about: about.trim(),
+      completed : false,
     };
 
     addTodoToStore(newTodo);
@@ -176,6 +178,9 @@ const App: React.FC = () => {
         onShowInfoChange={setShowInfo}
         todos={todos}
         selectedID={selectedId}
+        handleCompletePress={() => {if (selectedId !== null) {
+          toggleComplete(selectedId)};
+        }} 
       />
 
       <EditModal

@@ -9,6 +9,7 @@ type TodoStore = {
   setTodos: (todos: Todo[]) => void;
   addTodo: (todo: Todo) => void;
   deleteTodo: (id: number) => void;
+  toggleComplete: (id: number) => void;
 };
 
 export const useTodoStore = create<TodoStore>((set) => ({
@@ -34,4 +35,13 @@ export const useTodoStore = create<TodoStore>((set) => ({
       AsyncStorage.setItem('todos', JSON.stringify(updatedTodos));
       return { todos: updatedTodos };
     }),
+  toggleComplete: (id: number | null) =>
+    set((state) => ({
+      todos: state.todos.map(todo =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      ),
+    })),
+
+
 }));
+

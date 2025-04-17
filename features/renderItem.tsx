@@ -3,6 +3,7 @@ import React from 'react';
 import { Todo } from '../type/types';
 
 
+
 interface RenderItemProps {
   item: Todo;
   selectedID: number | null;
@@ -11,6 +12,7 @@ interface RenderItemProps {
   handleInfoPress: (id: number) => void;
   handleEditPress: (id: number) => void;
   handleDelete: (id: number) => void;
+  
 }
 
 const RenderItem: React.FC<RenderItemProps> = ({
@@ -21,15 +23,33 @@ const RenderItem: React.FC<RenderItemProps> = ({
   handleInfoPress,
   handleSharePress,
   handleDelete,
+ 
 }) => {
   return (
     <View style={styles.itemContainerBox}>
       <View style={styles.itemContainer}>
         {/* Pressable wraps the todo content */}
         <Pressable onPress={() => handleItemPress(item.id)} style={styles.todoItem}>
-          <Text style={styles.todoTitle}>{item.title}</Text>
-          <Text style={styles.todoAbout}>{item.about}</Text>
+          <Text style={[
+            styles.todoItem,
+            {
+              textDecorationLine: item.completed ? 'line-through' : 'none',
+              color: item.completed ? 'gray' : '#F0E3CA'
+            },
+          ]}>
+            {item.title}
+          </Text>
+
+          <Text style={[
+            styles.todoItem,
+            {
+              textDecorationLine: item.completed ? 'line-through' : 'none',
+              color: item.completed ? 'gray' : '#F0E3CA'
+            },
+          ]}>{item.about}</Text>
         </Pressable>
+
+
 
         {/* Delete button */}
         <TouchableOpacity onPress={() => handleDelete(item.id)} style={styles.closebutton}>
@@ -120,5 +140,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    
   },
 })

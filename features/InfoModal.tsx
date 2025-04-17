@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Modal, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Modal, TouchableOpacity, Image} from 'react-native'
 import React, { Dispatch, SetStateAction } from 'react'
 import { Todo } from '../type/types';
 
@@ -7,7 +7,8 @@ interface InfoModalProps {
     showInfo: boolean | undefined;
     onShowInfoChange: Dispatch<SetStateAction<boolean>>;
     selectedID: number | null;
-    todos: Todo[]
+    todos: Todo[],
+    handleCompletePress: (id: number | null) => void;
 }
 
 const InfoModal: React.FC<InfoModalProps> = (
@@ -15,7 +16,8 @@ const InfoModal: React.FC<InfoModalProps> = (
         showInfo,
         onShowInfoChange,
         selectedID,
-        todos
+        todos,
+        handleCompletePress,
     }) => {
 
     const selectedTodo = todos.find((t) => t.id === selectedID);
@@ -27,17 +29,30 @@ const InfoModal: React.FC<InfoModalProps> = (
             transparent
             animationType="fade"
             onRequestClose={() => onShowInfoChange(false)}
+            
         >
             <View style={styles.infoOverlay}>
                 <View style={styles.infoContainer}>
 
                     {selectedTodo && (
                         <>
+                            <TouchableOpacity onPress={() => handleCompletePress(selectedID)}>
+                                <View style={styles.aligment}>                            
+                                    {!selectedTodo.completed
+                                        ? 
+                                    <Image source={require('../assets/square.png')} style={styles.check}/> 
+
+                                        : 
+                                    <Image source={require('../assets/check.png')} style={styles.check}/>}                            
+                                </View>
+                            </TouchableOpacity>
                             <Text style={styles.infoText}>Task : {selectedTodo.title}</Text>
                             <Text style={styles.infoText}>About : {selectedTodo.about}</Text>
                             <Text style={styles.infoText}>
                                 Created at: {new Date(selectedTodo.created || 0).toLocaleString()}
                             </Text>
+                            <Text style={styles.infoText}>Status : {selectedTodo.completed ? 'Finished' : 'Did not finish'}</Text>
+                            
                         </>
                     )}
 
@@ -62,6 +77,18 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
+    aligment: {
+        flexDirection: 'column',          
+        alignItems: 'center',          
+        justifyContent: 'space-between', 
+        gap: 5,                        
+        borderColor : 'white',
+        borderWidth : 2,
+        width : 200,
+        marginBottom : 20,
+        padding : 5
+      }
+      ,
     infoContainer: {
         backgroundColor: '#1B1A17',
         padding: 20,
@@ -74,7 +101,7 @@ const styles = StyleSheet.create({
     infoText: {
         color: '#FFFFFF',
         fontSize: 18,
-        marginBottom: 20,
+        marginBottom: 10,
         fontFamily: 'Roboto',
         fontWeight: '400',
         lineHeight: 18,
@@ -94,4 +121,10 @@ const styles = StyleSheet.create({
         color: '#F0E3CA',
         fontSize: 16,
     },
+    check : {
+        width:40,
+        height : 40,
+        margin : 0,
+        padding : 0
+      }
 })
