@@ -44,6 +44,7 @@ A feature-rich To-Do List mobile application built with **React Native**, suppor
 - 📝 **Add Tasks** – Title & description input
 - ✏️ **Edit Tasks** – Update title and details
 - ❌ **Delete Tasks** – With confirmation modal
+- ✅ **Mark as Complete** -- Mark task when completed
 - ℹ️ **Task Info Modal** – View task details
 - 📤 **Share Tasks** – Share via WhatsApp, Telegram, Facebook, VK, Clipboard
 - 📦 **Persistent Storage** – Saves tasks using AsyncStorage
@@ -67,7 +68,7 @@ A feature-rich To-Do List mobile application built with **React Native**, suppor
 - cd To-do-list
 - npm install
 -  // Run on Device or Emulator
-- npx react-native run-
+- npx react-native run-android
 
 ```
 
@@ -101,6 +102,8 @@ A feature-rich To-Do List mobile application built with **React Native**, suppor
 ## AsyncStorage Structure
 
 -todos: Array of task objects (id, title, about, created)
+
+
 -taskId: Incremental ID for new tasks
 
 ---
