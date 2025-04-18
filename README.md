@@ -11,6 +11,7 @@ A feature-rich To-Do List mobile application built with **React Native**, suppor
 ## Figma Design Link
 
 - https://www.figma.com/design/0voUh3g2fDdGMbKNibqygj/To-Do-List--Community-?node-id=42-188
+
 ---
 
 ## Tech Stack
@@ -38,7 +39,7 @@ A feature-rich To-Do List mobile application built with **React Native**, suppor
 
 ---
 
-## Getting Started**
+## Getting Started
 
 - Prerequisites
 - Node.js
@@ -84,10 +85,11 @@ A feature-rich To-Do List mobile application built with **React Native**, suppor
 
 ---
 ## AsyncStorage Structure
+
 -todos: Array of task objects (id, title, about, created)
 -taskId: Incremental ID for new tasks
 
-
+---
 
 ## Author
 Vipusa Sriharan
