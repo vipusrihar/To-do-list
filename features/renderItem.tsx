@@ -33,6 +33,7 @@ const RenderItem: React.FC<RenderItemProps> = ({
           <Text style={[
             styles.todoItem,
             {
+              fontSize :22,
               textDecorationLine: item.completed ? 'line-through' : 'none',
               color: item.completed ? 'gray' : '#F0E3CA'
             },
