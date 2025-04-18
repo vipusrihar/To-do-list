@@ -1,85 +1,74 @@
-# React Native To-Do List App
+# 📋 React Native To-Do List App
 
-A feature-rich To-Do List mobile application built with **React Native**, supporting task creation, editing, deletion, sharing, and task information views. The app uses **Zustand** for state management and supports **local persistence** via AsyncStorage.
-
----
-
-### Video Link
-
-<video controls src="./readmefiles/Untitled video - Made with Clipchamp.mp4" title="To-Do-List"></video>
+A **feature-rich To-Do List mobile application** built with **React Native** and **TypeScript**, supporting task creation, editing, deletion, sharing, and viewing detailed task info. The app uses **Zustand** for state management and **AsyncStorage** for local persistence.
 
 ---
 
-## Screenshots
+### 🎥 Demo Video
 
-![image1](readmefiles/first.png)
-![image2](readmefiles/second.png)
-![image3](readmefiles/third.png)
-![image4](readmefiles/fourth.png)
-![image5](readmefiles/fifth.png)
-![image6](readmefiles/sixth.png)
-
+<video controls src="./readmefiles/Untitled video - Made with Clipchamp.mp4" title="To-Do-List Demo"></video>
 
 ---
 
-## Figma Design Link
 
-- https://www.figma.com/design/0voUh3g2fDdGMbKNibqygj/To-Do-List--Community-?node-id=42-188
+### 🎨 Figma Design
 
----
-
-## Tech Stack
-
-- **React Native (CLI)**
-- **TypeScript**
-- **Zustand** 
-- **AsyncStorage** 
-- **CSS** 
-- **Modular Components** 
+[View on Figma](https://www.figma.com/design/0voUh3g2fDdGMbKNibqygj/To-Do-List--Community-?node-id=42-188)
 
 ---
 
-## Features
+## 🧰 Tech Stack
 
-- 📝 **Add Tasks** – Title & description input
-- ✏️ **Edit Tasks** – Update title and details
-- ❌ **Delete Tasks** – With confirmation modal
-- ✅ **Mark as Complete** -- Mark task when completed
-- ℹ️ **Task Info Modal** – View task details
-- 📤 **Share Tasks** – Share via WhatsApp, Telegram, Facebook, VK, Clipboard
-- 📦 **Persistent Storage** – Saves tasks using AsyncStorage
-- ✅ **FlatList UI** – Smooth rendering of task list
-- 🧠 **Zustand State** – Central state management with clean updates
-- 🎨 **Custom Design** – Material-styled components and modals
+- ⚛️ React Native (CLI)
+- ⌨️ TypeScript
+- 🐻 Zustand (State Management)
+- 💾 AsyncStorage (Persistence)
+- 🧩 Modular Components
+- 🎨 CSS for custom styles
 
 ---
 
-## Getting Started
+## 🚀 Features
 
-- Prerequisites
+- 📝 **Add Tasks** – Add tasks with title and description  
+- ✏️ **Edit Tasks** – Modify task details  
+- ❌ **Delete Tasks** – Confirm before deleting  
+- ✅ **Mark as Complete** – Tap to mark a task done  
+- ℹ️ **Task Info** – View task metadata in a modal  
+- 📤 **Share Tasks** – Share tasks via WhatsApp, Telegram, Facebook, VK, or copy to clipboard  
+- 📦 **Persistent Storage** – All tasks are saved locally  
+- 🧠 **Central State** – Managed via Zustand for smooth updates  
+- 🖼️ **FlatList UI** – Efficient, scrollable list  
+- 🎨 **Custom Design** – Material-inspired visuals
+
+---
+
+## ⚙️ Getting Started
+
+### 📋 Prerequisites
+
 - Node.js
-- Android/iOS emulator or device
+- Android/iOS device or emulator
 
--
-- Installation
+### 🛠️ Installation
+
 ```bash
+git clone https://github.com/vipusrihar/To-do-list.git
+cd To-do-list
+npm install
 
-- git clone 'https://github.com/vipusrihar/To-do-list.git'
-- cd To-do-list
-- npm install
--  // Run on Device or Emulator
-- npx react-native run-android
-
+# Run on Android emulator or connected device
+npx react-native run-android
 ```
 
 ---
 
-## Project Structure Getting Started
+## 📁 Project Structure
 
 ```bash
 .
-├── assets/              
-├── features/           
+├── assets/               # App icons, images
+├── features/             # Reusable components
 │   ├── EditModal.tsx
 │   ├── InputContainer.tsx
 │   ├── ShareModal.tsx
@@ -87,27 +76,44 @@ A feature-rich To-Do List mobile application built with **React Native**, suppor
 │   ├── DeleteModal.tsx
 │   └── renderItem.tsx
 ├── store/
-│   └── useToDoStore.ts    
+│   └── useToDoStore.ts   # Zustand store
 ├── type/
-│   └── types.ts          
+│   └── types.ts          # TypeScript types
 ├── utils/
-│   └── shareTask.ts       
-├── App.tsx                
+│   └── shareTask.ts      # Sharing logic
+├── App.tsx               # Main entry point
 └── ...
-
-
 ```
 
 ---
-## AsyncStorage Structure
 
--todos: Array of task objects (id, title, about, created)
+## 📦 AsyncStorage Structure
 
+- **`todos`**: Array of task objects  
+  - `id`: Unique ID  
+  - `title`: Task title  
+  - `about`: Task description  
+  - `created`: Timestamp  
+  - `completed` : Task Status
 
--taskId: Incremental ID for new tasks
+- **`taskId`**: Incremental ID tracker
 
 ---
 
-## Author
-Vipusa Sriharan
+## 👩‍💻 Author
 
+**Vipusa Sriharan**  
+Third Year Software Engineering Undergraduate  
+[GitHub Profile](https://github.com/vipusrihar)
+
+---
+
+
+### 📸 Screenshots
+
+| | | |
+|---|---|---|
+| ![image1](readmefiles/first.png) | ![image2](readmefiles/second.png) | ![image3](readmefiles/third.png) |
+| ![image4](readmefiles/fourth.png) | ![image5](readmefiles/fifth.png) | ![image6](readmefiles/sixth.png) |
+
+---
