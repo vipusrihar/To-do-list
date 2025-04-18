@@ -6,7 +6,7 @@ A **feature-rich To-Do List mobile application** built with **React Native** and
 
 ### 🎥 Demo Video
 
-[Watch Demo](readmefiles\Video.mp4)
+[Watch Demo](readmefiles/Video.mp4)
 
 
 ---
