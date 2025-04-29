@@ -64,30 +64,6 @@ npx react-native run-android
 
 ---
 
-## 📁 Project Structure
-
-```bash
-.
-├── assets/               # App icons, images
-├── features/             # Reusable components
-│   ├── EditModal.tsx
-│   ├── InputContainer.tsx
-│   ├── ShareModal.tsx
-│   ├── InfoModal.tsx
-│   ├── DeleteModal.tsx
-│   └── renderItem.tsx
-├── store/
-│   └── useToDoStore.ts   # Zustand store
-├── type/
-│   └── types.ts          # TypeScript types
-├── utils/
-│   └── shareTask.ts      # Sharing logic
-├── App.tsx               # Main entry point
-└── ...
-```
-
----
-
 ## 📦 AsyncStorage Structure
 
 - **`todos`**: Array of task objects  
